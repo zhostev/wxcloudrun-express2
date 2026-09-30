@@ -2,12 +2,16 @@
   <view class="loading" wx:if="{{loading}}">正在生成分享卡…</view>
   <view class="card" wx:if="{{loadError}}">
     <view class="muted" style="text-align:center">{{loadError}}</view>
+    <button class="plain-btn" bindtap="render" style="margin-top:20rpx;width:100%">重新生成</button>
   </view>
+
+  <!-- 画布必须先挂到 DOM，才能 createSelectorQuery 拿到 node；未绘完时藏到屏外 -->
+  <view class="card preview-wrap" wx:if="{{showCanvas}}" style="{{drawn ? '' : 'position:fixed;left:-9999px;opacity:0;pointer-events:none;'}}">
+    <canvas type="2d" id="shareCanvas" style="width:750rpx;height:{{canvasH}}rpx"></canvas>
+  </view>
+
   <view wx:if="{{drawn}}">
-    <view class="card preview-wrap">
-      <canvas type="2d" id="shareCanvas" style="width:750rpx;height:{{canvasH}}rpx"></canvas>
-    </view>
-    <button class="primary-btn" open-type="share" bindtap="shareToFriend">分享给好友</button>
+    <button class="primary-btn" open-type="share">分享给好友</button>
     <button class="plain-btn" bindtap="saveToAlbum" style="margin-top:16rpx;width:100%">保存图片到相册</button>
     <view class="muted small" style="text-align:center;margin-top:16rpx">分享卡可直接发到班级群公示</view>
   </view>
