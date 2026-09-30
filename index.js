@@ -12,11 +12,15 @@ app.use(express.json({ limit: "1mb" }));
 
 app.get("/health", (req, res) => {
   const secret = process.env.SESSION_SECRET;
+  const { inviteUpstreamBase } = require("./lib/members");
+  const upstream = inviteUpstreamBase();
   res.json({
     ok: true,
     service: "class-fund-ledger",
     ts: Date.now(),
     session_secret_configured: !!(secret && String(secret).length >= 16),
+    // Web (904.s7ea.com) issues codes to Worker/D1; CloudRun redeems locally then falls back here.
+    invite_upstream: upstream || null,
   });
 });
 

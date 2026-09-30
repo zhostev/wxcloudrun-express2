@@ -42,6 +42,10 @@
    小程序通过该公网域名调后端（wx.request）；此路径不会注入 x-wx-openid，必须靠 WECHAT_SECRET + jscode2session。
    正式上线前需完成：①云托管控制台绑定自定义域名 `904api.hoo.ink`；②在 hoo.ink 的 DNS 处加 CNAME 指向云托管给的目标；
    ③微信公众平台 → 小程序 → 服务器域名白名单加 `https://904api.hoo.ink`（request + uploadFile）。
+
+   **邀请码双后端**：网页 `https://904.s7ea.com` 把码写进 Worker/D1；小程序仍请求本域名。云托管
+   `POST /api/auth/code` 在 MySQL 无匹配时会回源 Worker 核销（`INVITE_UPSTREAM_BASE`，默认
+   `https://904.s7ea.com`；设为 `0` 关闭）。`/health` 的 `invite_upstream` 可确认。网页发码后请在小程序用同一手机号核销；探测/失败过的码需重新签发。
 3. tabBar：首页 / 明细 / 物资 / 记账 / 我的；审批、成员管理、分享卡在"我的"和首页入口。
 
 登录方式：微信一键登录（已绑定成员）/ 8 位一次性邀请码（家委会发放，首次登录自动绑定微信）/
