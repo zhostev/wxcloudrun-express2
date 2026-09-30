@@ -25,7 +25,8 @@ Page({
         .refreshMe(true)
         .then((res) => {
           if (!res) return;
-          this.setData({ canApprove: !!res.permissions.approve });
+          const perms = (res.member && res.member.permissions) || res.permissions || {};
+          this.setData({ canApprove: !!perms.approve });
           this.loadPending();
         })
         .catch(() => {});

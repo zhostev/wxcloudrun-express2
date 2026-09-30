@@ -15,7 +15,7 @@
 | `SESSION_SECRET` | 会话签名密钥（必须设置，随机字符串） |
 | `OWNER_PASSWORD` | 维护者密码登录（备用通道，建议设置） |
 | `TRUST_WX_HEADERS` | 设为 `1`：信任云托管注入的 `x-wx-openid`，免 AppSecret 登录 |
-| `WECHAT_APPID` / `WECHAT_SECRET` | 非云托管环境时的 `jscode2session` 回退（云托管可不设） |
+| `WECHAT_APPID` / `WECHAT_SECRET` | 公网域名 `wx.request` 登录必填 Secret（AppID 默认 `wx2861b42fc732bdf4`）。仅当改用 `callContainer` + `TRUST_WX_HEADERS=1` 时可省略 |
 | `DEFAULT_CLASS_ID` | 默认班级 id（未设置时取数据库第一条） |
 | `PUBLIC_APP_NAME` | 公开页应用名（默认用班级名） |
 | `R2_ACCOUNT_ID` / `R2_ACCESS_KEY_ID` / `R2_SECRET_ACCESS_KEY` | Cloudflare R2 凭证（凭证附件用） |
@@ -46,6 +46,10 @@
 
 登录方式：微信一键登录（已绑定成员）/ 8 位一次性邀请码（家委会发放，首次登录自动绑定微信）/
 维护者密码（备用）。
+
+> **微信一键登录（当前架构）**：小程序用 wx.request 打公网域名 BASE_URL，云托管**不会**注入 x-wx-openid。
+> 因此生产环境 **WECHAT_SECRET 必填**（微信公众平台 → 开发管理 → 开发设置 → AppSecret）；WECHAT_APPID 可不配（默认 wx2861b42fc732bdf4）。
+> 若改为 wx.cloud.callContainer 走微信内网链路，可改设 TRUST_WX_HEADERS=1 并省略 AppSecret。
 
 ## 本地调试
 

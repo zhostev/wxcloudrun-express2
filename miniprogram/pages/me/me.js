@@ -29,7 +29,7 @@ Page({
       app
         .refreshMe(false)
         .then((res) => {
-          if (res) this.setData({ member: withLabel(res.member), permissions: res.permissions });
+          if (res) { const perms = (res.member && res.member.permissions) || res.permissions || null; this.setData({ member: withLabel(res.member), permissions: perms }); }
         })
         .catch(() => {});
     }
@@ -40,6 +40,8 @@ Page({
     const app = getApp();
     app.globalData.token = res.token;
     app.globalData.member = res.member;
+    app.globalData.permissions = (res.member && res.member.permissions) || null;
+    app.globalData.meLoaded = true;
     try {
       wx.setStorageSync("ledger_token", res.token);
       wx.setStorageSync("ledger_member", res.member);
@@ -47,12 +49,13 @@ Page({
     app
       .refreshMe(true)
       .then((r) => {
-        if (r) this.setData({ member: Object.assign({}, r.member, { roleLabel: util.roleLabel(r.member.role) }), permissions: r.permissions });
+        if (r) { const perms = (r.member && r.member.permissions) || r.permissions || null; this.setData({ member: Object.assign({}, r.member, { roleLabel: util.roleLabel(r.member.role) }), permissions: perms }); }
       })
       .catch(() => {});
     this.setData({
       loggedIn: true,
       member: Object.assign({}, res.member, { roleLabel: util.roleLabel(res.member.role) }),
+      permissions: (res.member && res.member.permissions) || null,
       loggingIn: false,
       inviteCode: "",
       password: "",
@@ -62,6 +65,21 @@ Page({
     wx.showToast({ title: "登录成功", icon: "success" });
   },
 
+
+  /** 按服务端 error code 生成友好登录提示 */
+  loginTipFor(err) {
+    const code = (err && err.code) || "";
+    if (code === "not_bound") {
+      return "该微信尚未绑定成员。请先用家委会发放的邀请码登录（首次会自动绑定微信），之后即可一键登录。";
+    }
+    if (code === "no_wx_config") {
+      return "服务端未配置微信登录密钥（WECHAT_SECRET）。请运维在云托管环境变量中设置后再试。";
+    }
+    if (code === "wechat_login_failed") {
+      return (err && err.message) || "微信登录失败，请重试";
+    }
+    return (err && err.message) || "登录失败";
+  },
   /** 微信一键登录 */
   wechatLogin() {
     this.setData({ loggingIn: true, loginTip: "" });
@@ -76,7 +94,7 @@ Page({
           .post("/api/auth/wechat", { code: res.code })
           .then((r) => this.onLoginSuccess(r))
           .catch((err) => {
-            this.setData({ loggingIn: false, loginTip: err.message || "微信登录失败" });
+            this.setData({ loggingIn: false, loginTip: this.loginTipFor(err) });
           });
       },
       fail: () => {
@@ -118,7 +136,7 @@ Page({
       .post("/api/auth/code", { code, wx_code: wxCode || undefined })
       .then((r) => this.onLoginSuccess(r))
       .catch((err) => {
-        this.setData({ loggingIn: false, loginTip: err.message || "邀请码登录失败" });
+        this.setData({ loggingIn: false, loginTip: this.loginTipFor(err) || err.message || "邀请码登录失败" });
       });
   },
 
@@ -133,7 +151,7 @@ Page({
       .post("/api/auth/owner", { password })
       .then((r) => this.onLoginSuccess(r))
       .catch((err) => {
-        this.setData({ loggingIn: false, loginTip: err.message || "密码登录失败" });
+        this.setData({ loggingIn: false, loginTip: this.loginTipFor(err) || err.message || "密码登录失败" });
       });
   },
 

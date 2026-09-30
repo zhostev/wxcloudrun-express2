@@ -43,7 +43,7 @@ App({
       .get("/api/me", { auth: true })
       .then((res) => {
         this.globalData.member = res.member;
-        this.globalData.permissions = res.permissions;
+        this.globalData.permissions = (res.member && res.member.permissions) || res.permissions || null;
         this.globalData.meLoaded = true;
         try {
           wx.setStorageSync("ledger_member", res.member);

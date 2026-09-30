@@ -2,13 +2,27 @@
  * 统一网络请求封装
  * - BASE_URL 取自 config.js；未配置时给出明确提示
  * - auth=true 时自动带 Authorization: Bearer <token>
- * - 401 → 清登录态并跳到"我的"页提示登录；403 → 提示服务端返回的原因
+ * - 401 → 清登录态并跳到"我的"页提示登录；403（业务权限）同理
+ * - 登录接口的业务错误（not_bound / no_wx_config 等）不触发清会话跳转，交给页面展示
  * - 网络失败 / 域名未配都有友好提示，不抛裸错
  */
 const config = require("../config.js");
 
 let baseUrlWarned = false;
 let redirectingToLogin = false;
+
+/** 登录相关业务错误码：不是"会话失效"，不应清 token / 强制跳转 */
+const LOGIN_BUSINESS_ERRORS = {
+  not_bound: true,
+  no_wx_config: true,
+  invalid_code: true,
+  invalid_login: true,
+  wrong_password: true,
+  wechat_login_failed: true,
+  too_many_attempts: true,
+  no_owner_password: true,
+  no_session_secret: true,
+};
 
 function baseUrl() {
   return (config.BASE_URL || "").replace(/\/+$/, "");
@@ -53,13 +67,20 @@ function handleAuthFailure(status, serverMessage) {
   }, 900);
 }
 
+function makeError(message, status, code) {
+  const err = new Error(message);
+  err.status = status;
+  err.code = code || "";
+  return err;
+}
+
 function request({ url, method = "GET", data = {}, auth = false, header = {} }) {
   return new Promise((resolve, reject) => {
     if (!ensureBaseUrl()) {
       reject(new Error("后端域名未配置"));
       return;
     }
-    const headers = Object.assign({}, header);
+    const headers = Object.assign({ "Content-Type": "application/json" }, header);
     if (auth) {
       const token = (getApp() && getApp().globalData.token) || "";
       if (token) headers["Authorization"] = "Bearer " + token;
@@ -76,14 +97,15 @@ function request({ url, method = "GET", data = {}, auth = false, header = {} }) 
           return;
         }
         const body = res.data || {};
+        const code = body.error || "";
         const message = body.message || body.error || ("请求失败（" + status + "）");
-        if (status === 401 || status === 403) {
+        const loginBusiness = !!LOGIN_BUSINESS_ERRORS[code];
+        if ((status === 401 || status === 403) && !loginBusiness) {
           handleAuthFailure(status, body.message || body.error);
-          reject(new Error(message));
-          return;
+        } else if (!loginBusiness) {
+          wx.showToast({ title: String(message).slice(0, 40), icon: "none", duration: 2200 });
         }
-        wx.showToast({ title: String(message).slice(0, 40), icon: "none", duration: 2200 });
-        reject(new Error(message));
+        reject(makeError(message, status, code));
       },
       fail(err) {
         wx.showToast({ title: "网络请求失败，请检查网络后重试", icon: "none", duration: 2200 });
@@ -131,13 +153,15 @@ function uploadFile({ url, filePath, name = "file", formData = {}, auth = true }
           resolve(body);
           return;
         }
+        const code = body.error || "";
         const message = body.message || body.error || ("上传失败（" + status + "）");
-        if (status === 401 || status === 403) {
+        const loginBusiness = !!LOGIN_BUSINESS_ERRORS[code];
+        if ((status === 401 || status === 403) && !loginBusiness) {
           handleAuthFailure(status, body.message || body.error);
-        } else {
+        } else if (!loginBusiness) {
           wx.showToast({ title: String(message).slice(0, 40), icon: "none" });
         }
-        reject(new Error(message));
+        reject(makeError(message, status, code));
       },
       fail(err) {
         wx.showToast({ title: "上传失败，请检查网络后重试", icon: "none" });
