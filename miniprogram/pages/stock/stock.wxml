@@ -13,15 +13,12 @@
   <view wx:if="{{!loading && !loadError}}">
     <view class="card" style="padding-top:8rpx;padding-bottom:8rpx" wx:if="{{items.length > 0}}">
       <view class="stock-row" wx:for="{{items}}" wx:key="id">
-        <view class="badge {{item.in ? 'badge-in' : 'badge-out'}}">{{item.in ? "入库" : "出库"}}</view>
         <view class="stock-info">
-          <view class="stock-name">{{item.name}} <text class="positive" wx:if="{{item.in}}">+{{item.qty}}</text><text class="negative" wx:if="{{!item.in}}">−{{item.qty}}</text></view>
-          <view class="muted small">{{item.date}} · {{item.meta}}</view>
-          <view class="muted small" wx:if="{{item.value}}">{{item.value}}</view>
-          <view class="small" wx:if="{{item.note}}">备注：{{item.note}}</view>
+          <view class="stock-name">{{item.name}} <text class="positive">结余 {{item.balance}}{{item.unit}}</text></view>
+          <view class="muted small">累计入库 {{item.totalIn}}{{item.unit}} · 出库 {{item.totalOut}}{{item.unit}}</view>
         </view>
       </view>
     </view>
-    <view class="empty" wx:if="{{items.length === 0}}">暂无物资出入库记录</view>
+    <view class="empty" wx:if="{{items.length === 0}}">暂无物资</view>
   </view>
 </view>

@@ -150,7 +150,10 @@ Page({
             const byId = {};
             targets.forEach((m) => (byId[m.id] = m.name));
             this.setData({
-              inviteCodes: list.map((x) => ({ name: byId[x.member_id] || x.member_id, code: x.code })),
+              inviteCodes: list.map((x) => {
+                const mid = (x.member && x.member.id) || x.member_id;
+                return { name: byId[mid] || mid, code: x.code };
+              }),
               showInvite: true,
             });
           })

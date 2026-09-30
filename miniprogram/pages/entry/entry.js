@@ -79,7 +79,7 @@ Page({
       success: (res) => {
         this.setData({ uploading: true });
         const tasks = res.tempFilePaths.map((p) =>
-          api.uploadFile({ url: "/api/entries/" + this.data.id + "/receipt", filePath: p })
+          api.uploadFile({ url: "/api/entries/" + this.data.id + "/attachments", filePath: p })
         );
         Promise.all(tasks)
           .then(() => {

@@ -29,19 +29,14 @@ Page({
     return api
       .get("/api/public/stock", { data: { limit: PAGE_SIZE, offset: 0 } })
       .then((res) => {
+        // /api/public/stock 返回按物品聚合的结余：{ item_name, unit, total_in, total_out, balance }
         const items = ((res && res.items) || []).map((s) => ({
-          id: s.id,
-          in: s.direction === "in",
-          name: s.item_name + (s.spec ? "（" + s.spec + "）" : ""),
-          qty: s.quantity + (s.unit || ""),
-          date: util.fmtDate(s.occurred_on),
-          meta:
-            s.direction === "in"
-              ? "来源：" + ({ donation: "捐赠", purchase: "采购", other: "其他" }[s.source] || s.source || "—") +
-                (s.donor ? " · " + s.donor : "")
-              : "用途：" + (s.purpose || "—"),
-          value: s.est_value_cents ? "估值 ¥" + util.fmtMoney(s.est_value_cents) : "",
-          note: s.note || "",
+          id: s.item_name + "|" + (s.unit || ""),
+          name: s.item_name,
+          unit: s.unit || "",
+          balance: s.balance,
+          totalIn: s.total_in,
+          totalOut: s.total_out,
         }));
         this.setData({ items, loading: false });
       })
