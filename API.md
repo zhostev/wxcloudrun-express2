@@ -147,6 +147,7 @@ roles：parent / committee / finance / auditor / teacher。
 查码状态：`{ valid, used, expired, member: { name, role }, phone_required }`（不泄露敏感信息）。
 ### POST /api/invitations（需登录 + manage）
 `{ member_id, days_valid? }` → `{ member, code, expires_at, phone_required }`（8 位一次性码）。
+同一成员再次签发会**作废其先前未使用的码**并生成新码；已激活成员也可重发（换设备 / 丢码后重新登录）。
 ### POST /api/invitations/bulk（需登录 + manage）
 `{ member_ids | all_inactive: true, days_valid? }` → `{ count, items, failed }`。
 

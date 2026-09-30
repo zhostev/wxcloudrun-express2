@@ -44,7 +44,7 @@
         </view>
         <view class="row">
           <button class="plain-btn" size="mini" data-idx="{{index}}" bindtap="changeRole">改角色</button>
-          <button class="plain-btn" size="mini" data-idx="{{index}}" bindtap="inviteOne" style="margin-left:8rpx" wx:if="{{!item.activated}}">发码</button>
+          <button class="plain-btn" size="mini" data-idx="{{index}}" bindtap="inviteOne" style="margin-left:8rpx" wx:if="{{!item.isOwner}}">{{item.activated ? '重发码' : '发码'}}</button>
         </view>
       </view>
     </view>

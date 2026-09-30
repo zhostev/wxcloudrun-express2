@@ -113,12 +113,15 @@ Page({
     });
   },
 
-  /** 给单个成员发邀请码 */
+  /** 给单个成员发 / 重发邀请码（后端会作废该成员未使用的旧码） */
   inviteOne(e) {
     const m = this.data.members[e.currentTarget.dataset.idx];
+    const reissue = !!m.activated;
     wx.showModal({
-      title: "发放邀请码",
-      content: "给「" + m.name + "」生成一个一次性登录码（默认 7 天有效）？",
+      title: reissue ? "重新签发邀请码" : "发放邀请码",
+      content: reissue
+        ? "给「" + m.name + "」重新生成登录码？将作废其未使用的旧码（默认 7 天有效）。"
+        : "给「" + m.name + "」生成一个一次性登录码（默认 7 天有效）？",
       success: (res) => {
         if (!res.confirm) return;
         api
