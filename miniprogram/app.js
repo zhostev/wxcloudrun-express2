@@ -25,7 +25,7 @@ App({
       wx.showModal({
         title: "请先配置后端域名",
         content:
-          "打开 miniprogram/config.js，把 BASE_URL 填成后端生产域名（https://904api.s7ea.com），保存后在开发者工具中重新编译。",
+          "打开 miniprogram/config.js，把 BASE_URL 填成后端生产域名（https://904api.hoo.ink），保存后在开发者工具中重新编译。",
         showCancel: false,
         confirmText: "知道了",
       });
