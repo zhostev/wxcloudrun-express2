@@ -9,6 +9,7 @@ Page({
     loginTip: "",
     // 邀请码 / 密码登录
     inviteCode: "",
+    phone: "",
     password: "",
     showCodeLogin: false,
     showPwdLogin: false,
@@ -58,6 +59,7 @@ Page({
       permissions: (res.member && res.member.permissions) || null,
       loggingIn: false,
       inviteCode: "",
+      phone: "",
       password: "",
       showCodeLogin: false,
       showPwdLogin: false,
@@ -71,6 +73,9 @@ Page({
     const code = (err && err.code) || "";
     if (code === "not_bound") {
       return "该微信尚未绑定成员。请先用家委会发放的邀请码登录（首次会自动绑定微信），之后即可一键登录。";
+    }
+    if (code === "phone_required" || code === "invalid_login") {
+      return "登录码无效或已过期。若花名册登记了手机号，请在下一栏填写同一11位手机号（不要和邀请码粘在一起）。连续失败5次后该码作废，需重新签发。";
     }
     if (code === "no_wx_config") {
       return "服务端未配置微信登录密钥（WECHAT_SECRET）。请运维在云托管环境变量中设置后再试。";
@@ -117,7 +122,10 @@ Page({
   },
 
   codeLogin() {
-    const code = this.data.inviteCode.trim();
+    const code = String(this.data.inviteCode || "").trim();
+    let phone = String(this.data.phone || "").replace(/[\s-]/g, "").trim();
+    if (phone.indexOf("+86") === 0) phone = phone.slice(3);
+    else if (phone.indexOf("86") === 0 && phone.length === 13) phone = phone.slice(2);
     if (!code) {
       wx.showToast({ title: "请填写邀请码", icon: "none" });
       return;
@@ -126,14 +134,14 @@ Page({
     // 顺手拿一个 wx.login code，让服务端有机会把 openid 绑定到该成员
     //（云托管环境下服务端优先用可信头 x-wx-openid）
     wx.login({
-      success: (res) => this.doCodeLogin(code, res.code || ""),
-      fail: () => this.doCodeLogin(code, ""),
+      success: (res) => this.doCodeLogin(code, res.code || "", phone),
+      fail: () => this.doCodeLogin(code, "", phone),
     });
   },
 
-  doCodeLogin(code, wxCode) {
+  doCodeLogin(code, wxCode, phone) {
     api
-      .post("/api/auth/code", { code, wx_code: wxCode || undefined })
+      .post("/api/auth/code", phone ? { code: code, phone: phone, wx_code: wxCode || undefined } : { code: code, wx_code: wxCode || undefined })
       .then((r) => this.onLoginSuccess(r))
       .catch((err) => {
         this.setData({ loggingIn: false, loginTip: this.loginTipFor(err) || err.message || "邀请码登录失败" });

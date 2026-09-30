@@ -127,7 +127,7 @@ Page({
         api
           .post("/api/invitations", { member_id: m.id }, { auth: true })
           .then((r) => {
-            this.setData({ inviteCodes: [{ name: m.name, code: r.code }], showInvite: true });
+            this.setData({ inviteCodes: [{ name: m.name, code: r.code, phoneRequired: !!r.phone_required }], showInvite: true });
           })
           .catch(() => {});
       },
@@ -155,7 +155,7 @@ Page({
             this.setData({
               inviteCodes: list.map((x) => {
                 const mid = (x.member && x.member.id) || x.member_id;
-                return { name: byId[mid] || mid, code: x.code };
+                return { name: byId[mid] || mid, code: x.code, phoneRequired: !!x.phone_required };
               }),
               showInvite: true,
             });

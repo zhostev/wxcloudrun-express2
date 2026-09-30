@@ -21,6 +21,7 @@
       </view>
       <view wx:if="{{showCodeLogin}}" style="margin-top:16rpx">
         <input class="form-input" placeholder="请输入 8 位邀请码" value="{{inviteCode}}" data-field="inviteCode" bindinput="bindField" maxlength="16" />
+        <input class="form-input" type="number" maxlength="11" placeholder="花名册手机号（已登记则必填）" value="{{phone}}" data-field="phone" bindinput="bindField" style="margin-top:16rpx" />
         <button class="plain-btn" bindtap="codeLogin" disabled="{{loggingIn}}" style="margin-top:16rpx;width:100%">使用邀请码登录</button>
       </view>
     </view>

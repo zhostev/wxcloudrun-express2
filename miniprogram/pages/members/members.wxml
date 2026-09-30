@@ -57,7 +57,7 @@
       <view class="section-title">登录邀请码</view>
       <view class="muted small" style="margin-bottom:16rpx">一次性码，请转交给对应家长在「我的」页登录使用</view>
       <view class="invite-row" wx:for="{{inviteCodes}}" wx:key="code">
-        <view><view style="font-weight:600">{{item.name}}</view><view class="invite-code">{{item.code}}</view></view>
+        <view><view style="font-weight:600">{{item.name}}</view><view class="invite-code">{{item.code}}</view><view class="muted small" wx:if="{{item.phoneRequired}}">登录时要另填花名册手机号，不要和邀请码粘在一起</view></view>
         <button class="plain-btn" size="mini" data-code="{{item.code}}" bindtap="copyCode">复制</button>
       </view>
       <button class="primary-btn" bindtap="closeInvite" style="margin-top:20rpx">完成</button>

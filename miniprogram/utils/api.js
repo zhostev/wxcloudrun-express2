@@ -17,6 +17,7 @@ const LOGIN_BUSINESS_ERRORS = {
   no_wx_config: true,
   invalid_code: true,
   invalid_login: true,
+  phone_required: true,
   wrong_password: true,
   wechat_login_failed: true,
   too_many_attempts: true,

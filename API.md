@@ -66,6 +66,7 @@ entryView = { id, kind: "donation"|"expense", amount_cents, amount, category, no
 ### POST /api/auth/code `{ code, phone?, wx_code? }`
 家委会发放的一次性邀请码登录（一次性，核销后失效）。首次登录时如带 `wx_code`
 （或云托管可信头），自动把微信 openid 绑定到该成员 → 下次可微信一键登录。
+花名册有手机号时必须同时传 `phone`（11 位，可含空格或 +86）。未传 → 400 `{error:phone_required}`，不核销、不增加失败次数。手机号不对或码错误/过期/已用 → 401 `invalid_login` / 登录码无效或已过期。码不区分大小写，字母表 ABCDEFGHJKMNPQRSTUVWXYZ23456789（无 I/L/O/0/1）。哈希为 sha256(SESSION_SECRET + ':' + 大写码)。
 成功 `{ token, expires_at, member }`；无效/过期/已用 → 401。
 
 ### POST /api/auth/owner `{ password }`
