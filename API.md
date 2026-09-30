@@ -26,7 +26,8 @@ BASE_URL：微信云托管服务域名（小程序 `miniprogram/config.js` 里�
 `received/spent/balance` 为格式化金额字符串（如 `"1,450.00"`）。
 
 ### GET /api/public/ledger?class_id=&limit=20&offset=0
-`{ class_id, count, items: [entryView] }`（只含已公示）。
+`{ class_id, count, total, items: [entryView] }`（只含已公示）。
+`count` = 本页条数；`total` = 已公示总笔数（= summary.donation_count + expense_count）。
 ```
 entryView = { id, kind: "donation"|"expense", amount_cents, amount, category, note,
   occurred_on, status: "approved", published_at, created_at,

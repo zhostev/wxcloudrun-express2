@@ -52,7 +52,10 @@ router.get("/ledger", async (req, res, next) => {
     const limit = intParam(req.query.limit, 20, 1, 100, "limit");
     const offset = intParam(req.query.offset, 0, 0, 100000, "offset");
     const items = await publicLedger(classId, limit, offset);
-    res.json({ class_id: classId, count: items.length, items });
+    // total = 全部已公示笔数；count = 本页条数（曾被误当成总数）
+    const summary = await publicSummary(classId);
+    const total = (Number(summary.donation_count) || 0) + (Number(summary.expense_count) || 0);
+    res.json({ class_id: classId, count: items.length, total, items });
   } catch (e) { next(e); }
 });
 
@@ -82,7 +85,7 @@ router.get("/share-card", async (req, res, next) => {
     const classId = await resolveClassId(req.query.class_id);
     const cls = await Class.findByPk(classId);
     const summary = await publicSummary(classId);
-    const items = await publicLedger(classId, 20, 0);
+    const items = await publicLedger(classId, 100, 0);
     const stockItemsRaw = await listItems(classId);
     const stockMoves = (await publicStock(classId, 100, 0)).moves;
     const stockItems = stockItemsRaw.filter((i) => i.balance > 0)

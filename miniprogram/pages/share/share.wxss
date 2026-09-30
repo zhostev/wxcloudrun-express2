@@ -1,3 +1,14 @@
-.preview-wrap { padding: 16rpx; }
-canvas { width: 750rpx; display: block; border-radius: 12rpx; }
-button.primary-btn { width: 100%; }
+.preview-wrap {
+  padding: 16rpx;
+  background: #f1f5f9;
+  border-radius: 16rpx;
+}
+canvas {
+  width: 750rpx;
+  display: block;
+  border-radius: 16rpx;
+  box-shadow: 0 8rpx 24rpx rgba(15, 23, 42, 0.08);
+}
+button.primary-btn {
+  width: 100%;
+}

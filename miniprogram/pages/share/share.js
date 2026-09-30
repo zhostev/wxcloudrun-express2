@@ -1,12 +1,6 @@
 const api = require("../../utils/api.js");
 const share = require("../../utils/share.js");
 
-/** 与 utils/share.js 中高度算法保持一致，便于先定 canvas 样式高度再绘制 */
-function estimateCardHeight(itemCount) {
-  const rows = Math.max(0, Math.min(Number(itemCount) || 0, 8));
-  return 560 + rows * 64 + 90;
-}
-
 Page({
   data: {
     loading: true,
@@ -27,17 +21,21 @@ Page({
     this._tempShareImage = "";
     this._canvasRetry = false;
 
-    Promise.all([
-      api.get("/api/public/summary").catch(() => null),
-      api.get("/api/public/ledger", { data: { limit: 8, offset: 0 } }).catch(() => null),
-    ])
-      .then(([summary, ledger]) => {
-        if (!summary) {
-          this.setData({ loading: false, loadError: "分享卡数据加载失败，请返回重试" });
-          return;
-        }
-        const items = (ledger && ledger.items) || [];
-        const canvasH = estimateCardHeight(items.length);
+    // 先取 summary 得到真实公示总数，再按总数拉齐 ledger（上限 MAX_ROWS）
+    api
+      .get("/api/public/summary")
+      .then((summary) => {
+        if (!summary) throw new Error("no summary");
+        // 按 MAX_ROWS 拉齐，计数用 summary 的真实公示总数（不再写死 8）
+        return api
+          .get("/api/public/ledger", { data: { limit: share.MAX_ROWS, offset: 0 } })
+          .catch(() => ({ items: [] }))
+          .then((ledger) => ({ summary, items: (ledger && ledger.items) || [] }));
+      })
+      .then(({ summary, items }) => {
+        const canvasH = share.estimateCardHeight(items.length, {
+          hasStock: (Number(summary.stock_kinds) || 0) > 0,
+        });
 
         // 先挂载 canvas，再在 setData 回调里取 node 绘制（避免 wx:if=drawn 时节点不存在）
         this.setData({ showCanvas: true, canvasH, loading: false }, () => {
