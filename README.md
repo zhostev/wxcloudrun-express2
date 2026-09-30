@@ -38,8 +38,10 @@
 ## 小程序
 
 1. 微信开发者工具导入 `miniprogram/` 目录。
-2. 在 `miniprogram/config.js` 填 `BASE_URL`（云托管服务域名，末尾不带斜杠）。
+2. `miniprogram/config.js` 的 `BASE_URL` 已默认为生产域名 `https://904api.s7ea.com`（末尾不带斜杠）。
    小程序必须通过该域名调后端，云托管才会注入可信的 `x-wx-openid`。
+   正式上线前需完成：①云托管控制台绑定自定义域名 `904api.s7ea.com`；②Cloudflare DNS 加 CNAME 指向云托管；
+   ③微信公众平台 → 小程序 → 服务器域名白名单加 `https://904api.s7ea.com`（request + uploadFile）。
 3. tabBar：首页 / 明细 / 物资 / 记账 / 我的；审批、成员管理、分享卡在"我的"和首页入口。
 
 登录方式：微信一键登录（已绑定成员）/ 8 位一次性邀请码（家委会发放，首次登录自动绑定微信）/
