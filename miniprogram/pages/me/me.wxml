@@ -1,0 +1,68 @@
+<view class="container">
+  <!-- 未登录 -->
+  <view wx:if="{{!loggedIn}}">
+    <view class="card login-hero">
+      <view style="font-size:64rpx">📒</view>
+      <view style="font-weight:700;font-size:36rpx;margin:16rpx 0 8rpx">904班 · 班级账本</view>
+      <view class="muted small">登录后可记账、审批、管理花名册</view>
+    </view>
+
+    <view class="card">
+      <button class="primary-btn" bindtap="wechatLogin" disabled="{{loggingIn}}">
+        {{loggingIn ? "登录中…" : "微信一键登录"}}
+      </button>
+      <view class="muted small" style="text-align:center;margin-top:12rpx">需已在班级花名册中，否则请联系家委会添加</view>
+    </view>
+
+    <view class="card">
+      <view class="login-toggle" bindtap="toggleCodeLogin">
+        <view style="font-weight:600">邀请码登录 {{showCodeLogin ? "▾" : "▸"}}</view>
+        <view class="muted small">家委会发放的一次性登录码</view>
+      </view>
+      <view wx:if="{{showCodeLogin}}" style="margin-top:16rpx">
+        <input class="form-input" placeholder="请输入 8 位邀请码" value="{{inviteCode}}" data-field="inviteCode" bindinput="bindField" maxlength="16" />
+        <button class="plain-btn" bindtap="codeLogin" disabled="{{loggingIn}}" style="margin-top:16rpx;width:100%">使用邀请码登录</button>
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="login-toggle" bindtap="togglePwdLogin">
+        <view style="font-weight:600">密码登录 {{showPwdLogin ? "▾" : "▸"}}</view>
+        <view class="muted small">班主任 / 维护者备用通道</view>
+      </view>
+      <view wx:if="{{showPwdLogin}}" style="margin-top:16rpx">
+        <input class="form-input" password placeholder="请输入管理密码" value="{{password}}" data-field="password" bindinput="bindField" />
+        <button class="plain-btn" bindtap="pwdLogin" disabled="{{loggingIn}}" style="margin-top:16rpx;width:100%">密码登录</button>
+      </view>
+    </view>
+
+    <view class="card" wx:if="{{loginTip}}" style="border-left:8rpx solid #f59e0b">
+      <view class="small">{{loginTip}}</view>
+    </view>
+  </view>
+
+  <!-- 已登录 -->
+  <view wx:if="{{loggedIn && member}}">
+    <view class="card me-hero">
+      <view class="me-avatar">{{member.name ? member.name.slice(0, 1) : "我"}}</view>
+      <view style="margin-left:20rpx">
+        <view style="font-weight:700;font-size:34rpx">{{member.name}}</view>
+        <view class="muted small">{{member.roleLabel || ""}}</view>
+      </view>
+    </view>
+
+    <view class="card menu">
+      <view class="menu-row" wx:if="{{permissions && permissions.approve}}" bindtap="goApproval">
+        <view>待审批事项</view><view class="link">去处理 ›</view>
+      </view>
+      <view class="menu-row" wx:if="{{permissions && permissions.manage}}" bindtap="goMembers">
+        <view>成员管理</view><view class="link">花名册 ›</view>
+      </view>
+      <view class="menu-row" wx:if="{{!(permissions && (permissions.approve || permissions.manage))}}">
+        <view class="muted">当前账号为普通成员，无管理入口</view>
+      </view>
+    </view>
+
+    <button class="danger-btn" bindtap="logout" style="width:100%">退出登录</button>
+  </view>
+</view>

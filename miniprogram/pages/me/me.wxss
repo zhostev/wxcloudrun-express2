@@ -1,0 +1,13 @@
+.login-hero, .me-hero { text-align: center; }
+.me-hero { display: flex; align-items: center; text-align: left; }
+.me-avatar {
+  width: 110rpx; height: 110rpx; border-radius: 55rpx; flex-shrink: 0;
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: #fff;
+  font-size: 48rpx; font-weight: 700; display: flex; align-items: center; justify-content: center;
+}
+.login-toggle { padding: 4rpx 0; }
+.menu { padding-top: 8rpx; padding-bottom: 8rpx; }
+.menu-row { display: flex; align-items: center; justify-content: space-between; padding: 24rpx 0; border-bottom: 2rpx solid #f3f4f6; font-size: 30rpx; }
+.menu-row:last-child { border-bottom: none; }
+.link { color: #1d4ed8; font-size: 26rpx; }
+button.primary-btn, button.danger-btn { width: 100%; }

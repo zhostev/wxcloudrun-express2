@@ -1,0 +1,105 @@
+<view class="container">
+  <!-- 未登录提示 -->
+  <view class="card" wx:if="{{!loggedIn}}" style="text-align:center;padding:80rpx 30rpx">
+    <view style="font-size:60rpx">🔒</view>
+    <view style="font-weight:600;margin:20rpx 0 10rpx">记账需要先登录</view>
+    <view class="muted small" style="margin-bottom:30rpx">登录后即可记录捐赠、支出与物资出入库</view>
+    <button class="primary-btn" bindtap="goLogin">去登录</button>
+  </view>
+
+  <view wx:if="{{loggedIn}}">
+    <view class="seg">
+      <view wx:for="{{tabs}}" wx:key="key" class="seg-item {{tab === item.key ? 'on' : ''}}"
+        data-key="{{item.key}}" bindtap="switchTab">{{item.label}}</view>
+    </view>
+
+    <view class="card">
+      <!-- 捐赠表单 -->
+      <view wx:if="{{tab === 'donation'}}">
+        <view class="form-label">金额（元）*</view>
+        <input class="form-input" type="digit" placeholder="例如 100" value="{{amount}}" data-field="amount" bindinput="bindField" />
+        <view class="form-label">分类</view>
+        <input class="form-input" placeholder="例如 班费捐赠" value="{{category}}" data-field="category" bindinput="bindField" />
+        <view class="form-label">捐赠人 *</view>
+        <input class="form-input" placeholder="捐赠人姓名" value="{{donorName}}" data-field="donorName" bindinput="bindField" wx:if="{{donorDisplay === 'named'}}" />
+        <view class="radio-row" style="margin-top:12rpx">
+          <view class="radio-opt {{donorDisplay === 'named' ? 'on' : ''}}" data-field="donorDisplay" data-value="named" bindtap="setRadio">实名公示</view>
+          <view class="radio-opt {{donorDisplay === 'anonymous' ? 'on' : ''}}" data-field="donorDisplay" data-value="anonymous" bindtap="setRadio">匿名</view>
+        </view>
+        <view class="form-label">日期</view>
+        <picker mode="date" value="{{occurredOn}}" bindchange="bindDate"><view class="form-picker">{{occurredOn}}</view></picker>
+        <view class="form-label">备注</view>
+        <textarea class="form-textarea" placeholder="可选" value="{{note}}" data-field="note" bindinput="bindField" />
+      </view>
+
+      <!-- 支出表单 -->
+      <view wx:if="{{tab === 'expense'}}">
+        <view class="form-label">金额（元）*</view>
+        <input class="form-input" type="digit" placeholder="例如 50" value="{{amount}}" data-field="amount" bindinput="bindField" />
+        <view class="form-label">分类</view>
+        <input class="form-input" placeholder="例如 文具采购" value="{{category}}" data-field="category" bindinput="bindField" />
+        <view class="form-label">收款方 *</view>
+        <input class="form-input" placeholder="收款单位或个人" value="{{payee}}" data-field="payee" bindinput="bindField" />
+        <view class="form-label">用途</view>
+        <input class="form-input" placeholder="例如 班级活动奖品" value="{{activity}}" data-field="activity" bindinput="bindField" />
+        <view class="form-label">审批</view>
+        <view class="radio-row">
+          <view class="radio-opt {{!needApproval ? 'on' : ''}}" data-field="needApproval" data-value="{{false}}" bindtap="setRadio">直接公示</view>
+          <view class="radio-opt {{needApproval ? 'on' : ''}}" data-field="needApproval" data-value="{{true}}" bindtap="setRadio">需要审批</view>
+        </view>
+        <view class="muted small" style="margin-top:8rpx">需要审批时，集齐 2 个同意后才会公示</view>
+        <view class="form-label">日期</view>
+        <picker mode="date" value="{{occurredOn}}" bindchange="bindDate"><view class="form-picker">{{occurredOn}}</view></picker>
+        <view class="form-label">备注</view>
+        <textarea class="form-textarea" placeholder="可选" value="{{note}}" data-field="note" bindinput="bindField" />
+      </view>
+
+      <!-- 物资入库 -->
+      <view wx:if="{{tab === 'stockin'}}">
+        <view class="form-label">物品名称 *</view>
+        <input class="form-input" placeholder="例如 A4打印纸" value="{{itemName}}" data-field="itemName" bindinput="bindField" />
+        <view class="form-label">规格</view>
+        <input class="form-input" placeholder="例如 80g/包" value="{{spec}}" data-field="spec" bindinput="bindField" />
+        <view class="form-label">数量 *</view>
+        <input class="form-input" type="digit" placeholder="例如 10" value="{{quantity}}" data-field="quantity" bindinput="bindField" />
+        <view class="form-label">单位 *</view>
+        <input class="form-input" placeholder="例如 包/个/箱" value="{{unit}}" data-field="unit" bindinput="bindField" />
+        <view class="form-label">来源</view>
+        <view class="radio-row">
+          <view class="radio-opt {{source === 'donation' ? 'on' : ''}}" data-field="source" data-value="donation" bindtap="setRadio">捐赠</view>
+          <view class="radio-opt {{source === 'purchase' ? 'on' : ''}}" data-field="source" data-value="purchase" bindtap="setRadio">采购</view>
+          <view class="radio-opt {{source === 'other' ? 'on' : ''}}" data-field="source" data-value="other" bindtap="setRadio">其他</view>
+        </view>
+        <view class="form-label">估值（元，可选）</view>
+        <input class="form-input" type="digit" placeholder="例如 200" value="{{estValue}}" data-field="estValue" bindinput="bindField" />
+        <view class="form-label">日期</view>
+        <picker mode="date" value="{{occurredOn}}" bindchange="bindDate"><view class="form-picker">{{occurredOn}}</view></picker>
+        <view class="form-label">备注</view>
+        <textarea class="form-textarea" placeholder="可选" value="{{note}}" data-field="note" bindinput="bindField" />
+      </view>
+
+      <!-- 物资出库 -->
+      <view wx:if="{{tab === 'stockout'}}">
+        <view class="form-label">物品名称 *</view>
+        <input class="form-input" placeholder="例如 A4打印纸" value="{{itemName}}" data-field="itemName" bindinput="bindField" />
+        <view class="form-label">规格</view>
+        <input class="form-input" placeholder="例如 80g/包" value="{{spec}}" data-field="spec" bindinput="bindField" />
+        <view class="form-label">数量 *</view>
+        <input class="form-input" type="digit" placeholder="例如 2" value="{{quantity}}" data-field="quantity" bindinput="bindField" />
+        <view class="form-label">单位 *</view>
+        <input class="form-input" placeholder="例如 包/个/箱" value="{{unit}}" data-field="unit" bindinput="bindField" />
+        <view class="form-label">用途 *</view>
+        <input class="form-input" placeholder="例如 班会使用" value="{{purpose}}" data-field="purpose" bindinput="bindField" />
+        <view class="form-label">日期</view>
+        <picker mode="date" value="{{occurredOn}}" bindchange="bindDate"><view class="form-picker">{{occurredOn}}</view></picker>
+        <view class="form-label">备注</view>
+        <textarea class="form-textarea" placeholder="可选" value="{{note}}" data-field="note" bindinput="bindField" />
+      </view>
+
+      <button class="primary-btn" bindtap="submit" disabled="{{submitting}}" style="margin-top:32rpx">
+        {{submitting ? "提交中…" : "提交"}}
+      </button>
+    </view>
+    <view class="muted small" style="text-align:center">捐赠会直接公示；支出可选择是否需要审批</view>
+  </view>
+</view>

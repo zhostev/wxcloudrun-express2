@@ -1,0 +1,10 @@
+.detail-hero { background: #fff; border-radius: 20rpx; padding: 36rpx 28rpx; margin-bottom: 24rpx; text-align: center; box-shadow: 0 2rpx 12rpx rgba(29,78,216,.06); border-top: 8rpx solid #e5e7eb; }
+.hero-donation { border-top-color: #059669; }
+.hero-expense { border-top-color: #dc2626; }
+.detail-amount { font-size: 56rpx; font-weight: 700; margin: 16rpx 0 8rpx; }
+.kv { display: flex; padding: 16rpx 0; border-bottom: 2rpx solid #f3f4f6; font-size: 28rpx; }
+.kv:last-child { border-bottom: none; }
+.kv .k { color: #9ca3af; width: 160rpx; flex-shrink: 0; }
+.kv .v { flex: 1; text-align: right; word-break: break-all; }
+.receipt-grid { display: flex; flex-wrap: wrap; gap: 16rpx; }
+.receipt-thumb { width: 200rpx; height: 200rpx; border-radius: 12rpx; background: #f3f4f6; }

@@ -1,0 +1,14 @@
+<view class="container">
+  <view class="loading" wx:if="{{loading}}">正在生成分享卡…</view>
+  <view class="card" wx:if="{{loadError}}">
+    <view class="muted" style="text-align:center">{{loadError}}</view>
+  </view>
+  <view wx:if="{{drawn}}">
+    <view class="card preview-wrap">
+      <canvas type="2d" id="shareCanvas" style="width:750rpx;height:{{canvasH}}rpx"></canvas>
+    </view>
+    <button class="primary-btn" open-type="share" bindtap="shareToFriend">分享给好友</button>
+    <button class="plain-btn" bindtap="saveToAlbum" style="margin-top:16rpx;width:100%">保存图片到相册</button>
+    <view class="muted small" style="text-align:center;margin-top:16rpx">分享卡可直接发到班级群公示</view>
+  </view>
+</view>

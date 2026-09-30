@@ -1,0 +1,57 @@
+<view class="container">
+  <view class="card" wx:if="{{noPermission}}" style="text-align:center;padding:80rpx 30rpx">
+    <view style="font-size:60rpx">🙅</view>
+    <view style="font-weight:600;margin-top:20rpx">你没有审批权限</view>
+    <view class="muted small" style="margin-top:10rpx">审批权限仅开放给财务与审核角色</view>
+  </view>
+
+  <view wx:if="{{!noPermission}}">
+    <view class="seg">
+      <view class="seg-item {{tab === 'pending' ? 'on' : ''}}" data-key="pending" bindtap="switchTab">
+        待审批{{pending.length ? "（" + pending.length + "）" : ""}}
+      </view>
+      <view class="seg-item {{tab === 'done' ? 'on' : ''}}" data-key="done" bindtap="switchTab">已处理</view>
+    </view>
+
+    <view class="loading" wx:if="{{loading}}">加载中…</view>
+    <view class="card" wx:if="{{loadError}}"><view class="muted" style="text-align:center">{{loadError}}</view></view>
+
+    <view wx:if="{{!loading && !loadError && tab === 'pending'}}">
+      <view class="card" wx:for="{{pending}}" wx:key="id" style="margin-bottom:20rpx">
+        <view bindtap="goEntry" data-id="{{item.id}}">
+          <view class="between">
+            <view class="badge badge-pending">待审批</view>
+            <view class="muted small">{{item.date}}</view>
+          </view>
+          <view style="font-weight:600;font-size:32rpx;margin:12rpx 0 4rpx">{{item.title}}</view>
+          <view class="muted small">{{item.sub}}</view>
+          <view class="negative" style="font-size:36rpx;font-weight:700;margin-top:8rpx">−{{item.amountText}}</view>
+          <view class="muted small" wx:if="{{item.createdAt}}">提交于 {{item.createdAt}}</view>
+        </view>
+        <view class="row" style="margin-top:20rpx;gap:16rpx">
+          <button class="primary-btn" style="flex:1" size="mini" data-id="{{item.id}}" data-decision="approve"
+            bindtap="decide" disabled="{{acting !== ''}}">同意</button>
+          <button class="danger-btn" style="flex:1" size="mini" data-id="{{item.id}}" data-decision="reject"
+            bindtap="decide" disabled="{{acting !== ''}}">驳回</button>
+        </view>
+      </view>
+      <view class="empty" wx:if="{{pending.length === 0}}">太棒了，没有待审批事项</view>
+    </view>
+
+    <view wx:if="{{!loading && !loadError && tab === 'done'}}">
+      <view class="card" style="padding-top:8rpx;padding-bottom:8rpx" wx:if="{{done.length > 0}}">
+        <view class="ledger-row" wx:for="{{done}}" wx:key="id" bindtap="goEntry" data-id="{{item.id}}">
+          <view class="ledger-main">
+            <view class="ledger-date">{{item.date}}</view>
+            <view class="ledger-info">
+              <view class="ledger-title">{{item.title}}</view>
+              <view class="ledger-sub muted small">{{item.sub}}</view>
+            </view>
+          </view>
+          <view class="ledger-amount negative">−{{item.amountText}}</view>
+        </view>
+      </view>
+      <view class="empty" wx:if="{{done.length === 0}}">暂无已处理的审批</view>
+    </view>
+  </view>
+</view>

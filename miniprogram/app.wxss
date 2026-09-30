@@ -1,0 +1,93 @@
+/** 904 班级账本 · 全局样式（蓝渐变主题，参考 904.s7ea.com） */
+page {
+  background: #f3f5f9;
+  font-size: 28rpx;
+  color: #1f2937;
+}
+.container {
+  padding: 24rpx;
+}
+.card {
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 28rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 2rpx 12rpx rgba(29, 78, 216, 0.06);
+}
+.section-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  margin: 8rpx 0 20rpx;
+}
+.muted { color: #9ca3af; }
+.small { font-size: 24rpx; }
+.row { display: flex; align-items: center; }
+.between { display: flex; align-items: center; justify-content: space-between; }
+.positive { color: #059669; }
+.negative { color: #dc2626; }
+button.primary-btn {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: #fff;
+  border-radius: 16rpx;
+  font-size: 30rpx;
+}
+button.plain-btn {
+  background: #fff;
+  color: #1d4ed8;
+  border: 2rpx solid #bfdbfe;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+}
+button.danger-btn {
+  background: #fef2f2;
+  color: #dc2626;
+  border: 2rpx solid #fecaca;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+}
+button[disabled] { opacity: 0.55; }
+.empty {
+  text-align: center;
+  color: #9ca3af;
+  padding: 80rpx 0;
+  font-size: 28rpx;
+}
+.loading { text-align: center; color: #9ca3af; padding: 60rpx 0; }
+.badge {
+  display: inline-block;
+  font-size: 22rpx;
+  padding: 4rpx 14rpx;
+  border-radius: 20rpx;
+  line-height: 1.6;
+}
+.badge-donation { background: #ecfdf5; color: #059669; }
+.badge-expense { background: #fef2f2; color: #dc2626; }
+.badge-pending { background: #fffbeb; color: #b45309; }
+.badge-in { background: #eff6ff; color: #1d4ed8; }
+.badge-out { background: #fdf2f8; color: #be185d; }
+.form-label { font-size: 28rpx; color: #4b5563; margin: 24rpx 0 12rpx; }
+.form-input, .form-picker {
+  background: #fff;
+  border: 2rpx solid #e5e7eb;
+  border-radius: 14rpx;
+  padding: 20rpx 24rpx;
+  font-size: 30rpx;
+  width: 100%;
+  box-sizing: border-box;
+}
+.form-textarea {
+  background: #fff;
+  border: 2rpx solid #e5e7eb;
+  border-radius: 14rpx;
+  padding: 20rpx 24rpx;
+  font-size: 30rpx;
+  width: 100%;
+  box-sizing: border-box;
+  height: 160rpx;
+}
+.seg { display: flex; background: #eef2f7; border-radius: 16rpx; padding: 6rpx; margin-bottom: 24rpx; }
+.seg-item { flex: 1; text-align: center; padding: 16rpx 0; border-radius: 12rpx; font-size: 28rpx; color: #6b7280; }
+.seg-item.on { background: #fff; color: #1d4ed8; font-weight: 600; box-shadow: 0 2rpx 8rpx rgba(0,0,0,.08); }
+.radio-row { display: flex; gap: 16rpx; }
+.radio-opt { flex: 1; text-align: center; padding: 18rpx 0; border: 2rpx solid #e5e7eb; border-radius: 14rpx; font-size: 28rpx; background: #fff; }
+.radio-opt.on { border-color: #1d4ed8; color: #1d4ed8; font-weight: 600; background: #eff6ff; }

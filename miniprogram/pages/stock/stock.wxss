@@ -1,0 +1,5 @@
+.stock-row { display: flex; align-items: flex-start; padding: 22rpx 0; border-bottom: 2rpx solid #f3f4f6; gap: 16rpx; }
+.stock-row:last-child { border-bottom: none; }
+.stock-info { flex: 1; }
+.stock-name { font-size: 30rpx; font-weight: 600; }
+button[size="mini"] { font-size: 26rpx; padding: 0 24rpx; line-height: 2.2; }

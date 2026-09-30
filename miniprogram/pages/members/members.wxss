@@ -1,0 +1,10 @@
+.member-row { display: flex; align-items: center; justify-content: space-between; padding: 20rpx 0; border-bottom: 2rpx solid #f3f4f6; }
+.member-row:last-child { border-bottom: none; }
+.member-info { flex: 1; margin-right: 12rpx; }
+.member-name { font-size: 30rpx; font-weight: 600; }
+.member-name .badge { margin-left: 10rpx; vertical-align: 2rpx; }
+button[size="mini"] { font-size: 24rpx; padding: 0 20rpx; line-height: 2.2; }
+.mask { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,.5); display: flex; align-items: center; justify-content: center; z-index: 99; padding: 60rpx; }
+.popup { background: #fff; border-radius: 24rpx; padding: 36rpx 32rpx; width: 100%; max-height: 80vh; overflow-y: auto; }
+.invite-row { display: flex; align-items: center; justify-content: space-between; padding: 16rpx 0; border-bottom: 2rpx solid #f3f4f6; }
+.invite-code { font-size: 40rpx; font-weight: 700; letter-spacing: 6rpx; color: #1d4ed8; margin-top: 4rpx; }

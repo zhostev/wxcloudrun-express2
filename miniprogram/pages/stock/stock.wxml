@@ -1,0 +1,27 @@
+<view class="container">
+  <view class="between" style="margin-bottom:16rpx">
+    <view class="section-title" style="margin:0">物资台账</view>
+    <view class="row" wx:if="{{loggedIn}}">
+      <button class="plain-btn" size="mini" bindtap="goAddIn">入库</button>
+      <button class="plain-btn" size="mini" bindtap="goAddOut" style="margin-left:12rpx">出库</button>
+    </view>
+  </view>
+  <view class="loading" wx:if="{{loading}}">加载中…</view>
+  <view class="card" wx:if="{{loadError}}">
+    <view class="muted" style="text-align:center">{{loadError}}</view>
+  </view>
+  <view wx:if="{{!loading && !loadError}}">
+    <view class="card" style="padding-top:8rpx;padding-bottom:8rpx" wx:if="{{items.length > 0}}">
+      <view class="stock-row" wx:for="{{items}}" wx:key="id">
+        <view class="badge {{item.in ? 'badge-in' : 'badge-out'}}">{{item.in ? "入库" : "出库"}}</view>
+        <view class="stock-info">
+          <view class="stock-name">{{item.name}} <text class="positive" wx:if="{{item.in}}">+{{item.qty}}</text><text class="negative" wx:if="{{!item.in}}">−{{item.qty}}</text></view>
+          <view class="muted small">{{item.date}} · {{item.meta}}</view>
+          <view class="muted small" wx:if="{{item.value}}">{{item.value}}</view>
+          <view class="small" wx:if="{{item.note}}">备注：{{item.note}}</view>
+        </view>
+      </view>
+    </view>
+    <view class="empty" wx:if="{{items.length === 0}}">暂无物资出入库记录</view>
+  </view>
+</view>

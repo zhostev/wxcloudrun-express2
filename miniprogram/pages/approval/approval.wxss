@@ -1,0 +1,9 @@
+.ledger-row { display: flex; align-items: center; justify-content: space-between; padding: 22rpx 0; border-bottom: 2rpx solid #f3f4f6; }
+.ledger-row:last-child { border-bottom: none; }
+.ledger-main { display: flex; align-items: center; flex: 1; overflow: hidden; }
+.ledger-date { color: #9ca3af; font-size: 24rpx; width: 96rpx; flex-shrink: 0; }
+.ledger-info { flex: 1; overflow: hidden; }
+.ledger-title { font-size: 30rpx; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ledger-sub { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 4rpx; }
+.ledger-amount { font-size: 32rpx; font-weight: 600; margin-left: 16rpx; flex-shrink: 0; }
+button[size="mini"] { font-size: 28rpx; line-height: 2.4; }

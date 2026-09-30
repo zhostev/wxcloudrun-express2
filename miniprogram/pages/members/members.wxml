@@ -1,0 +1,66 @@
+<view class="container">
+  <view class="card" wx:if="{{noPermission}}" style="text-align:center;padding:80rpx 30rpx">
+    <view style="font-size:60rpx">🙅</view>
+    <view style="font-weight:600;margin-top:20rpx">你没有成员管理权限</view>
+    <view class="muted small" style="margin-top:10rpx">仅家委会 / 财务 / 审核 / 班主任可管理花名册</view>
+  </view>
+
+  <view wx:if="{{!noPermission}}">
+    <view class="between" style="margin-bottom:16rpx">
+      <view class="section-title" style="margin:0">班级花名册</view>
+      <view class="row">
+        <button class="plain-btn" size="mini" bindtap="inviteAll">批量发码</button>
+        <button class="plain-btn" size="mini" bindtap="toggleAdd" style="margin-left:12rpx">{{showAdd ? "收起" : "+ 新增"}}</button>
+      </view>
+    </view>
+
+    <!-- 新增成员 -->
+    <view class="card" wx:if="{{showAdd}}">
+      <view class="form-label">姓名 *</view>
+      <input class="form-input" placeholder="成员姓名" value="{{newName}}" data-field="newName" bindinput="bindField" />
+      <view class="form-label">手机号（可选）</view>
+      <input class="form-input" type="number" placeholder="手机号" value="{{newPhone}}" data-field="newPhone" bindinput="bindField" />
+      <view class="form-label">角色</view>
+      <picker mode="selector" range="{{roleNames}}" value="{{roleIndex}}" bindchange="bindRole">
+        <view class="form-picker">{{roleNames[roleIndex]}}</view>
+      </picker>
+      <button class="primary-btn" bindtap="addMember" disabled="{{submitting}}" style="margin-top:24rpx">
+        {{submitting ? "添加中…" : "添加到花名册"}}
+      </button>
+    </view>
+
+    <view class="loading" wx:if="{{loading}}">加载中…</view>
+    <view class="card" wx:if="{{loadError}}"><view class="muted" style="text-align:center">{{loadError}}</view></view>
+
+    <view class="card" style="padding-top:8rpx;padding-bottom:8rpx" wx:if="{{!loading && !loadError && members.length > 0}}">
+      <view class="member-row" wx:for="{{members}}" wx:key="id">
+        <view class="member-info">
+          <view class="member-name">
+            {{item.name}}
+            <text class="badge badge-in" wx:if="{{item.isOwner}}">班主任</text>
+            <text class="badge badge-pending" wx:if="{{!item.activated && !item.isOwner}}">未激活</text>
+          </view>
+          <view class="muted small">{{item.roleLabel}}<text wx:if="{{item.phone}}"> · {{item.phone}}</text></view>
+        </view>
+        <view class="row">
+          <button class="plain-btn" size="mini" data-idx="{{index}}" bindtap="changeRole">改角色</button>
+          <button class="plain-btn" size="mini" data-idx="{{index}}" bindtap="inviteOne" style="margin-left:8rpx" wx:if="{{!item.activated}}">发码</button>
+        </view>
+      </view>
+    </view>
+    <view class="empty" wx:if="{{!loading && !loadError && members.length === 0}}">花名册是空的，先添加成员吧</view>
+  </view>
+
+  <!-- 邀请码弹窗 -->
+  <view class="mask" wx:if="{{showInvite}}" bindtap="closeInvite">
+    <view class="popup" catchtap="noop">
+      <view class="section-title">登录邀请码</view>
+      <view class="muted small" style="margin-bottom:16rpx">一次性码，请转交给对应家长在「我的」页登录使用</view>
+      <view class="invite-row" wx:for="{{inviteCodes}}" wx:key="code">
+        <view><view style="font-weight:600">{{item.name}}</view><view class="invite-code">{{item.code}}</view></view>
+        <button class="plain-btn" size="mini" data-code="{{item.code}}" bindtap="copyCode">复制</button>
+      </view>
+      <button class="primary-btn" bindtap="closeInvite" style="margin-top:20rpx">完成</button>
+    </view>
+  </view>
+</view>

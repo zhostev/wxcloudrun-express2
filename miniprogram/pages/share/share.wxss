@@ -1,0 +1,3 @@
+.preview-wrap { padding: 16rpx; }
+canvas { width: 750rpx; display: block; border-radius: 12rpx; }
+button.primary-btn { width: 100%; }

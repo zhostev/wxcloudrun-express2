@@ -1,0 +1,10 @@
+node_modules
+node_modules_smoke
+.git
+.gitignore
+*.db
+*.sqlite
+*.sqlite3
+d1_export.json
+.env
+.DS_Store

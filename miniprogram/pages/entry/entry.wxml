@@ -1,0 +1,35 @@
+<view class="container">
+  <view class="loading" wx:if="{{loading}}">加载中…</view>
+  <view class="card" wx:if="{{loadError}}">
+    <view class="muted" style="text-align:center">{{loadError}}</view>
+  </view>
+  <view wx:if="{{!loading && !loadError && entry}}">
+    <view class="detail-hero {{entry.donation ? 'hero-donation' : 'hero-expense'}}">
+      <view class="badge {{entry.donation ? 'badge-donation' : 'badge-expense'}}">{{entry.kindLabel}}</view>
+      <view class="detail-amount {{entry.donation ? 'positive' : 'negative'}}">{{entry.amountText}}</view>
+      <view class="muted small">{{entry.occurredOn}} · {{entry.status}}</view>
+    </view>
+    <view class="card">
+      <view class="kv"><view class="k">分类</view><view class="v">{{entry.category}}</view></view>
+      <view class="kv" wx:if="{{entry.donation}}"><view class="k">捐赠人</view><view class="v">{{entry.donor}}</view></view>
+      <view class="kv" wx:if="{{!entry.donation}}"><view class="k">收款方</view><view class="v">{{entry.payee}}</view></view>
+      <view class="kv" wx:if="{{entry.activity}}"><view class="k">用途</view><view class="v">{{entry.activity}}</view></view>
+      <view class="kv" wx:if="{{entry.handler}}"><view class="k">经手人</view><view class="v">{{entry.handler}}</view></view>
+      <view class="kv"><view class="k">备注</view><view class="v">{{entry.note}}</view></view>
+      <view class="kv" wx:if="{{entry.approvals}}"><view class="k">审批</view><view class="v">{{entry.approvals}}</view></view>
+      <view class="kv" wx:if="{{entry.publishedAt}}"><view class="k">公示时间</view><view class="v">{{entry.publishedAt}}</view></view>
+    </view>
+    <view class="card">
+      <view class="section-title">凭证</view>
+      <view class="receipt-grid" wx:if="{{receiptUrls.length > 0}}">
+        <image wx:for="{{receiptUrls}}" wx:key="*this" src="{{item}}" mode="aspectFill"
+          class="receipt-thumb" bindtap="previewReceipt" data-idx="{{index}}" />
+      </view>
+      <view class="muted small" wx:if="{{hasHiddenReceipts}}">该条目有凭证，登录后可查看</view>
+      <view class="muted small" wx:if="{{!hasHiddenReceipts && receiptUrls.length === 0}}">暂无凭证</view>
+      <button class="plain-btn" bindtap="uploadReceipt" disabled="{{uploading}}" wx:if="{{canUpload}}" style="margin-top:20rpx">
+        {{uploading ? "上传中…" : "上传凭证"}}
+      </button>
+    </view>
+  </view>
+</view>
