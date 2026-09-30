@@ -41,6 +41,7 @@ app.use("/api/members", require("./routes/members"));
 app.use("/api/invitations", require("./routes/invitations"));
 app.use("/api/duty", require("./routes/duty"));
 app.use("/api/audit", require("./routes/audit"));
+app.use("/api/admin", require("./routes/admin")); // 一次性管理操作（仅 owner）
 
 // 小程序兼容别名：GET /api/me（= /api/auth/me）
 const authRouter = require("./routes/auth");

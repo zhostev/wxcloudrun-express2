@@ -162,3 +162,11 @@ roles：parent / committee / finance / auditor / teacher。
 ### GET /api/audit/verify（需登录，view_internal）
 `{ ok, length, head, coverage }`。审计链为 hash 链（sha256(prev+"\n"+canonical)，与原 Worker 算法一致）；
 coverage 含 entries/entry_events、approvals/approval_events、receipts/receipt_events 对账。
+
+## 管理（仅 owner）
+
+### POST /api/admin/import
+一次性历史数据导入。Body 为 `d1_export.json` 的完整内容（`{ schema, counts, data }`，约 77KB）。
+鉴权二选一：owner token；或**空库时**用 `x-owner-password` 请求头传班主任密码（首次建库引导，库中有班级后该通道自动关闭）。
+幂等（按主键跳过已存在行），导入后自动校验审计链。
+返回 `{ ok, imported: {表名: 行数}, audit: { ok, length, head } }`。

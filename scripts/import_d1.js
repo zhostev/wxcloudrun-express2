@@ -30,12 +30,17 @@ function normalizeRow(table, row) {
   return r;
 }
 
-async function runImport({ jsonPath } = {}) {
-  const file = jsonPath || process.env.IMPORT_JSON || "/tmp/d1_export.json";
-  if (!fs.existsSync(file)) {
-    throw new Error(`导出文件不存在：${file}（先在本机执行 D1 导出脚本，再把 d1_export.json 传到容器）`);
+async function runImport({ jsonPath, data: dataArg } = {}) {
+  let dump;
+  if (dataArg) {
+    dump = dataArg;
+  } else {
+    const file = jsonPath || process.env.IMPORT_JSON || "/tmp/d1_export.json";
+    if (!fs.existsSync(file)) {
+      throw new Error(`导出文件不存在：${file}（先在本机执行 D1 导出脚本，再把 d1_export.json 传到容器）`);
+    }
+    dump = JSON.parse(fs.readFileSync(file, "utf8"));
   }
-  const dump = JSON.parse(fs.readFileSync(file, "utf8"));
   const data = dump.data || {};
   const db = require("../db");
   const report = { inserted: {}, skipped: {} };
