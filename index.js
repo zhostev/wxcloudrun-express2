@@ -2,7 +2,7 @@
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
-const { initDB, counterRouter } = require("./db");
+const { initDB } = require("./db");
 const { AppError } = require("./lib/util");
 
 const app = express();
@@ -12,7 +12,26 @@ app.use(express.json({ limit: "1mb" }));
 
 app.get("/health", (req, res) => res.json({ ok: true, service: "class-fund-ledger", ts: Date.now() }));
 
-app.use("/", counterRouter()); // 模板保留：/ /api/count /api/wx_openid
+// 服务首页：简单状态页（替代模板的计数器演示页）
+app.get("/", (req, res) => {
+  res.type("html").send(`<!doctype html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>904 班级账本 · API 服务</title>
+<style>body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;max-width:640px;margin:8vh auto;padding:0 20px;color:#333}
+h1{font-size:22px}.ok{color:#07c160}code{background:#f4f4f4;padding:2px 6px;border-radius:4px;font-size:13px}
+li{margin:6px 0}a{color:#1a73e8}</style></head><body>
+<h1>📒 904 班级账本 <span class="ok">· 运行中</span></h1>
+<p>这是小程序后端 API 服务。公开接口：</p>
+<ul>
+<li><a href="/api/public/app"><code>GET /api/public/app</code></a> 班级信息</li>
+<li><a href="/api/public/summary"><code>GET /api/public/summary</code></a> 收支汇总</li>
+<li><a href="/api/public/ledger"><code>GET /api/public/ledger</code></a> 公示台账</li>
+<li><a href="/api/public/stock"><code>GET /api/public/stock</code></a> 物资台账</li>
+<li><a href="/health"><code>GET /health</code></a> 健康检查</li>
+</ul>
+<p>小程序端请在 <code>miniprogram/config.js</code> 填写本域名为 <code>BASE_URL</code>。</p>
+</body></html>`);
+});
 
 app.use("/api/public", require("./routes/public"));
 app.use("/api/auth", require("./routes/auth"));

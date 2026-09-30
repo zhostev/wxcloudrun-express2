@@ -185,28 +185,6 @@ async function init() {
 }
 const initDB = init;
 
-// 模板保留的计数器路由（/ /api/count /api/wx_openid）
-function counterRouter() {
-  const router = require("express").Router();
-  const path = require("path");
-  router.get("/", (req, res) => {
-    const f = path.join(__dirname, "index.html");
-    require("fs").existsSync(f) ? res.sendFile(f) : res.json({ ok: true, service: "class-fund-ledger" });
-  });
-  router.post("/api/count", async (req, res, next) => {
-    try {
-      const { action } = req.body || {};
-      if (action === "inc") await Counter.create();
-      else if (action === "clear") await Counter.destroy({ truncate: true });
-      res.json({ count: await Counter.count() });
-    } catch (e) { next(e); }
-  });
-  router.get("/api/wx_openid", (req, res) => {
-    res.json({ openid: req.headers["x-wx-openid"] || null, note: "云托管可信请求头" });
-  });
-  return router;
-}
-
 // 裸 SQL 查询（报表类复杂查询直接复用 Worker 版 SQL，? 占位）
 async function q(sql, replacements = []) {
   return sequelize.query(sql, { replacements, type: QueryTypes.SELECT });
@@ -217,7 +195,7 @@ async function q1(sql, replacements = []) {
 }
 
 module.exports = {
-  init, initDB, sequelize, q, q1, counterRouter,
+  init, initDB, sequelize, q, q1,
   Class, Member, Entry, Approval, Attachment, StockMove,
   DutyGroup, DutyShift, LoginCode, AuthThrottle, AuditLog, Counter,
 };
