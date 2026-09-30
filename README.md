@@ -39,7 +39,7 @@
 
 1. 微信开发者工具导入 `miniprogram/` 目录。
 2. `miniprogram/config.js` 的 `BASE_URL` 已默认为生产域名 `https://904api.hoo.ink`（末尾不带斜杠）。
-   小程序必须通过该域名调后端，云托管才会注入可信的 `x-wx-openid`。
+   小程序通过该公网域名调后端（wx.request）；此路径不会注入 x-wx-openid，必须靠 WECHAT_SECRET + jscode2session。
    正式上线前需完成：①云托管控制台绑定自定义域名 `904api.hoo.ink`；②在 hoo.ink 的 DNS 处加 CNAME 指向云托管给的目标；
    ③微信公众平台 → 小程序 → 服务器域名白名单加 `https://904api.hoo.ink`（request + uploadFile）。
 3. tabBar：首页 / 明细 / 物资 / 记账 / 我的；审批、成员管理、分享卡在"我的"和首页入口。
@@ -50,6 +50,23 @@
 > **微信一键登录（当前架构）**：小程序用 wx.request 打公网域名 BASE_URL，云托管**不会**注入 x-wx-openid。
 > 因此生产环境 **WECHAT_SECRET 必填**（微信公众平台 → 开发管理 → 开发设置 → AppSecret）；WECHAT_APPID 可不配（默认 wx2861b42fc732bdf4）。
 > 若改为 wx.cloud.callContainer 走微信内网链路，可改设 TRUST_WX_HEADERS=1 并省略 AppSecret。
+
+
+## 微信登录报「连接微信服务失败：fetch failed」
+
+错误路径：小程序 wx.login → POST /api/auth/wechat → 服务端 lib/auth.js exchangeWechatCode → https://api.weixin.qq.com/sns/jscode2session 出网失败（不是 AppSecret 配错；Secret 错会返回微信 errcode，不会是 fetch failed）。
+
+**根因（云托管常见）**：控制台开启了「开放接口服务」后，容器内访问 api.weixin.qq.com 被旁路劫持并挂自签证书；Node fetch/HTTPS 校验失败 → fetch failed。且官方明确 jscode2session 不支持云调用。
+
+**请按下列步骤操作（必须做；仅改代码无法绕过）：**
+
+1. 打开微信云托管控制台 → 当前环境 → 云调用
+2. 关闭「开放接口服务」
+3. 重新部署本服务（发布新版本；仅关开关不部署不生效）
+4. 部署完成后在小程序「我的」再点微信登录
+5. 若仍失败：确认环境变量 WECHAT_SECRET；首次用户需先用邀请码登录以绑定 openid（否则会看到 not_bound）
+
+可选：改用 wx.cloud.callContainer + TRUST_WX_HEADERS=1，由云托管注入 x-wx-openid，可不再调用 jscode2session。
 
 ## 本地调试
 

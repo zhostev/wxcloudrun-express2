@@ -10,6 +10,7 @@
  *   WECHAT_APPID=wx2861b42fc732bdf4（可不配，后端已有默认）
  *   WECHAT_SECRET=<小程序 AppSecret，来自 mp.weixin.qq.com>
  * 另需已配置 SESSION_SECRET（>=16 字符）才能签发登录 token。
+ * 若 toast「连接微信服务失败：fetch failed」：云托管关闭「开放接口服务」并重新部署。
  */
 module.exports = {
   BASE_URL: "https://904api.hoo.ink",
